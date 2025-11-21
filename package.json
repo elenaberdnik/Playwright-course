@@ -1,0 +1,28 @@
+{
+  "name": "playwright",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx playwright test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elenaberdnik/Playwright.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/elenaberdnik/Playwright/issues"
+  },
+  "homepage": "https://github.com/elenaberdnik/Playwright#readme",
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@playwright/test": "^1.56.1",
+    "@types/node": "^24.10.1",
+    "eslint": "^9.39.1",
+    "eslint-plugin-playwright": "^2.3.0",
+    "globals": "^16.5.0",
+    "prettier": "3.6.2"
+  }
+}
