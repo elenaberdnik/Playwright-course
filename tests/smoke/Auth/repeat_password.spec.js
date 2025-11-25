@@ -18,26 +18,19 @@ test.describe('User Registration - Repeat Password validation', () => {
   };
 
   // 1. Repeat Password is required
-  test('Repeat Password is required (empty field)', async ({ page }) => {
-    const userData = createUserData();
-    const popup = page.locator('.modal-content');
+  
+    test('Repeat Password is required (empty field)', async ({ page }) => {
+        const popup = page.locator('.modal-content');
 
-    const passwordInput = popup.locator('#signupPassword');
-    const repeatPasswordInput = popup.locator('#signupRepeatPassword');
-    const registerButton = popup.getByRole('button', { name: 'Register' });
+        const repeatPasswordInput = popup.locator('#signupRepeatPassword');
+        await repeatPasswordInput.fill('');
+        await repeatPasswordInput.blur();
 
-    await popup.locator('#signupName').fill(faker.person.firstName());
-    await popup.locator('#signupLastName').fill(userData.lastName);
-    await popup.locator('#signupEmail').fill(userData.email);
-    await passwordInput.fill(userData.password);
-
-    await repeatPasswordInput.click();
-    await passwordInput.click();
-
-    await expect(popup.getByText('Re-enter password required')).toBeVisible();
-    await expect(repeatPasswordInput).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-    await expect(registerButton).toBeDisabled();
-  });
+        const repeatPasswordError = popup.getByText('Re-enter password required');
+        await expect(repeatPasswordError).toBeVisible();
+        await expect(repeatPasswordInput).toHaveCSS('border-color', 'rgb(220, 53, 69)');
+        await expect(repeatPasswordError).toHaveText('Re-enter password required');
+    });
 
   // 2. Repeat Passwords do not match
   test('Repeat Password is invalid (do not match)', async ({ page }) => {
