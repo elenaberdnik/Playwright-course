@@ -66,6 +66,9 @@ export default defineConfig({
               },
               baseURL: 'https://qauto.forstudy.space/',
           },
+           expect: {
+    timeout: 5000, 
+  },
       },
       {
           name: 'regression',
