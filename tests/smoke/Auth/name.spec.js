@@ -1,71 +1,61 @@
-
-import { test, expect } from '@playwright/test';
+import { test } from '@playwright/test';
+import { SignupPage } from '../../../src/PageObjects/SignupPage.js';
 
 test.describe('User Registration - Name validation', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto('/');
-    
-    await page.getByRole('button', { name: 'Sign up' }).click();
-  });
+  let signup;
 
-    // 1. Name required
+test.beforeEach(async ({ page }) => {
+  signup = new SignupPage(page);
+  await signup.navigate();
+  await signup.openSignupPopup();
+});
+
+
+    // 1. Name is required
     test('Name is required (empty field)', async ({ page }) => {
-        const popup = page.locator('.modal-content');
+        const signup = new SignupPage(page);
 
-    const nameInput = popup.locator('#signupName');
-    await nameInput.fill('');
-    await nameInput.blur();
+        await signup.fillName('');
 
-    const nameError = popup.getByText('Name required');
-    await expect(nameError).toBeVisible();
-    await expect(nameInput).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-    await expect(nameError).toHaveText('Name required');
+        await signup.blurName();
+
+        await signup.expectNameError('Name required');
     }
     );
-    // 2. Name is invalid (not English symbols)
+
+    // 2. Name is invalid 
     test('Name is invalid (not English symbols)', async ({ page }) => {
-        const popup = page.locator('.modal-content');
+        const signup = new SignupPage(page);
 
-    const nameInput = popup.locator('#signupName');
-    await nameInput.fill('Іван'); 
-    await nameInput.blur();
+        await signup.fillName('Іван'); 
+        await signup.blurName();
 
-    const nameError = popup.getByText('Name is invalid');
-    await expect(nameError).toBeVisible();
-    await expect(nameInput).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-    await expect(nameError).toHaveText('Name is invalid');
+        await signup.expectNameError('Name is invalid');
     }
     );
+
     // 3. wrong length (less than 2 characters)
-
     test('Name is invalid (less than 2 characters)', async ({ page }) => {
-        const popup = page.locator('.modal-content');
+        const signup = new SignupPage(page);
 
-    const nameInput = popup.locator('#signupName');
-    await nameInput.fill('A'); 
-    await nameInput.blur();
+        await signup.fillName('A'); 
+        await signup.blurName();
 
-    const nameError = popup.getByText('Name has to be from 2 to 20 characters long');
-    await expect(nameError).toBeVisible();
-    await expect(nameInput).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-    await expect(nameError).toHaveText('Name has to be from 2 to 20 characters long');
+        await signup.expectNameError('Name has to be from 2 to 20 characters long');
     }
     );
+
     // 4. wrong length (more than 20 characters) 
     test('Name is invalid (more than 20 characters)', async ({ page }) => {
-        const popup = page.locator('.modal-content');
+        const signup =
+            new SignupPage(page);
 
-    const nameInput = popup.locator('#signupName');
-    await nameInput.fill('AlexanderthegreatestTYUI'); 
-    await nameInput.blur();
+        await signup.fillName('AlexanderthegreatestTYUI'); 
+        await signup.blurName();
 
-    const nameError = popup.getByText('Name has to be from 2 to 20 characters long');
-    await expect(nameError).toBeVisible();
-
-    await expect(nameInput).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-    await expect(nameError).toHaveText('Name has to be from 2 to 20 characters long');
-     }
+        await signup.expectNameError('Name has to be from 2 to 20 characters long');
+    }
     );
-
 }
 );
+      
