@@ -7,20 +7,20 @@ export class SignupPopup extends BasePage {
     super(page);
     this.url = '/';
 
-    // Кнопка відкриття попапу
+  
     this.signupButton = page.getByRole('button', { name: 'Sign up' });
 
-    // Сам попап
+   
     this.registrationPopup = page.locator('.modal-content');
 
-    // Інпути
+    
     this.nameInput = this.registrationPopup.locator('#signupName');
     this.lastNameInput = this.registrationPopup.locator('#signupLastName');
     this.emailInput = this.registrationPopup.locator('#signupEmail');
     this.passwordInput = this.registrationPopup.locator('#signupPassword');
     this.repeatPasswordInput = this.registrationPopup.locator('#signupRepeatPassword');
 
-    // Кнопка реєстрації + success повідомлення
+   
     this.registerButton = this.registrationPopup.getByRole('button', { name: 'Register' });
     this.successMessage = page.locator('.alert-success');
   }
@@ -34,7 +34,7 @@ export class SignupPopup extends BasePage {
     await this.expectVisible(this.registrationPopup);
   }
 
-  // Заповнення форми валідними даними
+  
   async fillRegistrationForm(user) {
     await this.nameInput.fill(user.name);
     await this.lastNameInput.fill(user.lastName);
