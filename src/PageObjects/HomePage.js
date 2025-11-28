@@ -9,7 +9,7 @@ export class HomePage extends BasePage {
   }
 
   async open() {
-    await this.open(this.url); 
+    await this.goTo(this.url); 
   }
 
   async openSignupPopup() {
