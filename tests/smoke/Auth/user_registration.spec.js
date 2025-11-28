@@ -1,50 +1,31 @@
-import { test } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import { faker } from '@faker-js/faker';
-import { SignupPage } from '../../../src/PageObjects/SignupPage.js';
+import { SignupPopup } from '../../../src/PageObjects/SignupPopup.js';
 
-
-
-
-test ('should register a new user successfully', async ({ page }) => {
-  const signup = new SignupPage(page);
+test('should register a new user successfully', async ({ page }) => {
+  const signupPopup = new SignupPopup(page);
 
   const password = `Qwerty${faker.number.int({ min: 10, max: 20 })}!`;
-  const userData = {
+  const user = {
     name: faker.person.firstName(),
     lastName: faker.person.lastName(),
     email: faker.internet.email(),
     password,
     repeatPassword: password,
   };
-  await signup.navigate();
-  await signup.openSignupPopup();
-  await signup.expectRegisterDisabled();
-  await signup.fillRegistrationForm(userData);
-   await signup.expectRegisterEnabled();
-  await signup.submitRegistrationForm();
-  await signup.expectRegistrationSuccess();
-}
-);
+
+  await signupPopup.navigate();
+  await signupPopup.openSignupPopup();
 
 
+  await expect(signupPopup.registerButton).toBeDisabled();
 
+  await signupPopup.fillRegistrationForm(user);
 
+  await expect(signupPopup.registerButton).toBeEnabled();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  await signupPopup.submitRegistrationForm();
+  await signupPopup.expectRegistrationSuccess();
+});
 
 
