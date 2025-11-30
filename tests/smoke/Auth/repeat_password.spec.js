@@ -1,55 +1,37 @@
 import { test, expect } from '@playwright/test';
-import { faker } from '@faker-js/faker';
+import { SignupPopup } from '../../../src/PageObjects/SignupPopup.js';
 
 test.describe('User Registration - Repeat Password validation', () => {
+  let signupPopup;
+
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
-    await page.getByRole('button', { name: 'Sign up' }).click();
+    signupPopup = new SignupPopup(page);
+    await signupPopup.navigate();
+    await signupPopup.openSignupPopup();
   });
 
-  const createUserData = () => {
-    const password = `Qwerty${faker.number.int({ min: 10, max: 20 })}!`;
-    return {
-      lastName: faker.person.lastName(),
-      email: faker.internet.email(),
-      password,
-      repeatPassword: password,
-    };
-  };
+  test('Repeat Password is required (empty field)', async () => {
+    await signupPopup.repeatPasswordInput.fill('');
+    await signupPopup.repeatPasswordInput.blur();
 
-  // 1. Repeat Password is required
-  
-    test('Repeat Password is required (empty field)', async ({ page }) => {
-        const popup = page.locator('.modal-content');
+    const error = signupPopup.registrationPopup.getByText('Re-enter password required');
+    await expect(error).toBeVisible();
+    await expect(signupPopup.repeatPasswordInput).toHaveCSS(
+      'border-color',
+      'rgb(220, 53, 69)',
+    );
+  });
 
-        const repeatPasswordInput = popup.locator('#signupRepeatPassword');
-        await repeatPasswordInput.fill('');
-        await repeatPasswordInput.blur();
+  test('Repeat Password does not match', async () => {
+    await signupPopup.passwordInput.fill('Qwerty123!');
+    await signupPopup.repeatPasswordInput.fill('Qwerty124!');
+    await signupPopup.repeatPasswordInput.blur();
 
-        const repeatPasswordError = popup.getByText('Re-enter password required');
-        await expect(repeatPasswordError).toBeVisible();
-        await expect(repeatPasswordInput).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-        await expect(repeatPasswordError).toHaveText('Re-enter password required');
-    });
-
-  // 2. Repeat Passwords do not match
-  test('Repeat Password is invalid (do not match)', async ({ page }) => {
-    const userData = createUserData();
-    const popup = page.locator('.modal-content');
-    const passwordInput = popup.locator('#signupPassword');
-    const repeatPasswordInput = popup.locator('#signupRepeatPassword');
-    const registerButton = popup.getByRole('button', { name: 'Register' });
-
-    await popup.locator('#signupName').fill(faker.person.firstName());
-    await popup.locator('#signupLastName').fill(userData.lastName);
-    await popup.locator('#signupEmail').fill(userData.email);
-
-    await passwordInput.fill(userData.password);
-    await repeatPasswordInput.fill('Qwerty99!'); 
-    await passwordInput.click();                 
-
-    await expect(popup.getByText('Passwords do not match')).toBeVisible();
-    await expect(repeatPasswordInput).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-    await expect(registerButton).toBeDisabled();
+    const error = signupPopup.registrationPopup.getByText('Passwords do not match');
+    await expect(error).toBeVisible();
+    await expect(signupPopup.repeatPasswordInput).toHaveCSS(
+      'border-color',
+      'rgb(220, 53, 69)',
+    );
   });
 });

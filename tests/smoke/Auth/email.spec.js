@@ -1,44 +1,30 @@
 import { test, expect } from '@playwright/test';
-
+import { SignupPopup } from '../../../src/PageObjects/SignupPopup.js';
 
 test.describe('User Registration - Email validation', () => {
+  let signupPopup;
+
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
-    await page.getByRole('button', { name: 'Sign up' }).click();
+    signupPopup = new SignupPopup(page);
+    await signupPopup.navigate();
+    await signupPopup.openSignupPopup();
   });
 
+  test('Email is required (empty field)', async () => {
+    await signupPopup.emailInput.fill('');
+    await signupPopup.emailInput.blur();
 
-  // 1 .Email is required
-    test('Email is required (empty field)', async ({ page }) => {
-       
-        const popup = page.locator('.modal-content');
+    const error = signupPopup.registrationPopup.getByText('Email required');
+    await expect(error).toBeVisible();
+    await expect(signupPopup.emailInput).toHaveCSS('border-color', 'rgb(220, 53, 69)');
+  });
 
-        const emailInput = popup.locator('#signupEmail');
-        await emailInput.fill('');
-        await emailInput.blur();
+  test('Email is invalid', async () => {
+    await signupPopup.emailInput.fill('invalidEmail');
+    await signupPopup.emailInput.blur();
 
-        const emailError = popup.getByText('Email required');
-        await expect(emailError).toBeVisible();
-        await expect(emailInput).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-        await expect(emailError).toHaveText('Email required');
-    }
-    );
-
-    // 2. Email is incorrect
-    test('Email is invalid', async ({ page }) => {
-        const popup = page.locator('.modal-content');
-
-        const emailInput = popup.locator('#signupEmail');
-        await emailInput.fill('invalidEmail'); 
-        await emailInput.blur();
-
-        const emailError = popup.getByText('Email is incorrect');
-        await expect(emailError).toBeVisible();
-        await expect(emailInput).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-        await expect(emailError).toHaveText('Email is incorrect');
-    
-     }
-    );
-
-}
-);
+    const error = signupPopup.registrationPopup.getByText('Email is incorrect');
+    await expect(error).toBeVisible();
+    await expect(signupPopup.emailInput).toHaveCSS('border-color', 'rgb(220, 53, 69)');
+  });
+});

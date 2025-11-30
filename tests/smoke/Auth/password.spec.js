@@ -1,70 +1,54 @@
 import { test, expect } from '@playwright/test';
-
+import { SignupPopup } from '../../../src/PageObjects/SignupPopup.js';
 
 test.describe('User Registration - Password validation', () => {
+  let signupPopup;
+
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
-    await page.getByRole('button', { name: 'Sign up' }).click();
+    signupPopup = new SignupPopup(page);
+    await signupPopup.navigate();
+    await signupPopup.openSignupPopup();
   });
 
-    // 1. Password is required
+  test('Password is required (empty field)', async () => {
+    await signupPopup.passwordInput.fill('');
+    await signupPopup.passwordInput.blur();
 
-    test('Password is required (empty field)', async ({ page }) => {
-        const popup = page.locator('.modal-content');
+    const error = signupPopup.registrationPopup.getByText('Password required');
+    await expect(error).toBeVisible();
+    await expect(signupPopup.passwordInput).toHaveCSS('border-color', 'rgb(220, 53, 69)');
+  });
 
-        const passwordInput = popup.locator('#signupPassword');
-        await passwordInput.fill('');
-        await passwordInput.blur();
-        const passwordError = popup.getByText('Password required');
-        await expect(passwordError).toBeVisible();
-        await expect(passwordInput).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-        await expect(passwordError).toHaveText('Password required');
-    }
+  test('Password is too short (less than 8 characters)', async () => {
+    await signupPopup.passwordInput.fill('Qwe1!');
+    await signupPopup.passwordInput.blur();
+
+    const error = signupPopup.registrationPopup.getByText(
+      'Password has to be from 8 to 15 characters long and contain at least one integer, one capital, and one small letter',
     );
+    await expect(error).toBeVisible();
+    await expect(signupPopup.passwordInput).toHaveCSS('border-color', 'rgb(220, 53, 69)');
+  });
 
-    // 2. Password is too short (less than 8 characters)
-    test('Password is invalid (less than 8 characters)', async ({ page }) => {
-        const popup = page.locator('.modal-content');
+  test('Password without uppercase letter', async () => {
+    await signupPopup.passwordInput.fill('qwerty1!');
+    await signupPopup.passwordInput.blur();
 
-        const passwordInput = popup.locator('#signupPassword');
-        await passwordInput.fill('Qwe1!'); 
-        await passwordInput.blur();
-
-        await expect(
-            popup.getByText('Password has to be from 8 to 15 characters long and contain at least one integer, one capital, and one small letter')
-        ).toBeVisible();
-        await expect(passwordInput).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-    }
+    const error = signupPopup.registrationPopup.getByText(
+      'Password has to be from 8 to 15 characters long and contain at least one integer, one capital, and one small letter',
     );
+    await expect(error).toBeVisible();
+    await expect(signupPopup.passwordInput).toHaveCSS('border-color', 'rgb(220, 53, 69)');
+  });
 
-    // 3. Password is too long (more than 15 characters)
-    test('Password is invalid (more than 15 characters)', async ({ page }) => {
-        const popup = page.locator('.modal-content');
+  test('Password is too long (more than 15 characters)', async () => {
+    await signupPopup.passwordInput.fill('QwertyUUUUIIuiop12345!');
+    await signupPopup.passwordInput.blur();
 
-        const passwordInput = popup.locator('#signupPassword');
-        await passwordInput.fill('Qwertyuiop12345!'); 
-        await passwordInput.blur();
-
-        await expect(
-            popup.getByText('Password has to be from 8 to 15 characters long and contain at least one integer, one capital, and one small letter')
-        ).toBeVisible();
-
-        await expect(passwordInput).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-    }
+    const error = signupPopup.registrationPopup.getByText(
+      'Password has to be from 8 to 15 characters long and contain at least one integer, one capital, and one small letter',
     );
-
-    // 4. No capital letter
-    test('Password is invalid (no capital letter)', async ({ page }) => {
-        const popup = page.locator('.modal-content');
-
-        const passwordInput = popup.locator('#signupPassword');
-        await passwordInput.fill('qwerty123!'); 
-        await passwordInput.blur();
-
-        await expect(
-            popup.getByText('Password has to be from 8 to 15 characters long and contain at least one integer, one capital, and one small letter')
-        ).toBeVisible();
-        await expect(passwordInput).toHaveCSS('border-color', 'rgb(220, 53, 69)');
+    await expect(error).toBeVisible();
+    await expect(signupPopup.passwordInput).toHaveCSS('border-color', 'rgb(220, 53, 69)');
   });
 });
-

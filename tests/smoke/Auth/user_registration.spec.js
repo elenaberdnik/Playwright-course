@@ -1,44 +1,31 @@
 import { test, expect } from '@playwright/test';
 import { faker } from '@faker-js/faker';
+import { SignupPopup } from '../../../src/PageObjects/SignupPopup.js';
 
-test.describe('User Registration', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto('/');
-  });
+test('should register a new user successfully', async ({ page }) => {
+  const signupPopup = new SignupPopup(page);
 
-  test('should register a new user successfully', async ({ page }) => {
-    const password = `Qwerty${faker.number.int({ min: 10, max: 20 })}!`;
-    const userData = {
-      name: faker.person.firstName(),
-      lastName: faker.person.lastName(),
-      email: faker.internet.email(),
-      password,
-      repeatPassword: password,
-    };
+  const password = `Qwerty${faker.number.int({ min: 10, max: 20 })}!`;
+  const user = {
+    name: faker.person.firstName(),
+    lastName: faker.person.lastName(),
+    email: faker.internet.email(),
+    password,
+    repeatPassword: password,
+  };
 
-    const signupButton = page.getByRole('button', { name: 'Sign up' });
-    await signupButton.click();
+  await signupPopup.navigate();
+  await signupPopup.openSignupPopup();
 
-    const signupPopup = page.locator('.modal-content');
-    await expect(signupPopup).toBeVisible();
 
-    const registerButton = signupPopup.getByRole('button', { name: 'Register' });
-    await expect(registerButton).toBeDisabled();
+  await expect(signupPopup.registerButton).toBeDisabled();
 
-   
-    await signupPopup.locator('#signupName').fill(userData.name);
-    await signupPopup.locator('#signupLastName').fill(userData.lastName);
-    await signupPopup.locator('#signupEmail').fill(userData.email);
-    await signupPopup.locator('#signupPassword').fill(userData.password);
-    await signupPopup.locator('#signupRepeatPassword').fill(userData.repeatPassword);
+  await signupPopup.fillRegistrationForm(user);
 
-  
-    await expect(registerButton).toBeEnabled();
+  await expect(signupPopup.registerButton).toBeEnabled();
 
-    await registerButton.click();
-
-    await expect(signupPopup).not.toBeVisible();
-    const successMessage = page.locator('.alert-success');
-    await expect(successMessage).toHaveText('Registration complete');
-  });
+  await signupPopup.submitRegistrationForm();
+  await signupPopup.expectRegistrationSuccess();
 });
+
+
