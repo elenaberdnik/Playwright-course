@@ -5,7 +5,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "npx playwright test"
+    "test": "ºt"
   },
   "repository": {
     "type": "git",
@@ -27,6 +27,7 @@
     "prettier": "3.6.2"
   },
   "dependencies": {
-    "@faker-js/faker": "^10.1.0"
+    "@faker-js/faker": "^10.1.0",
+    "dotenv": "^17.2.3"
   }
 }

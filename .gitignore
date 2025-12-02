@@ -8,4 +8,10 @@ node_modules/
 /playwright/.auth/
 .vscode/
 .idea/
+.env
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
+
+
 
