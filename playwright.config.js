@@ -1,5 +1,6 @@
 // @ts-check
 import { defineConfig, devices } from '@playwright/test';
+import config from "./config/config.js";
 
 /**
  * Read environment variables from file.
@@ -29,21 +30,20 @@ export default defineConfig({
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
-  use: {
-    /* Base URL to use in actions like `await page.goto('')`. */
-      baseURL: 'https://qauto.forstudy.space/',
-    httpCredentials: {
-        username: 'guest',
-        password: 'welcome2qauto',
-        },
-
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-      headless: true,
-    viewport: { width: 1280, height: 720 },
-    trace: 'on',
-    video: "on",
-    screenshot: "on"
+ use: {
+  baseURL: config.baseURL,
+    // @ts-ignore
+  httpCredentials: config.httpCredentials,
+  headless: true, 
+  viewport: { width: 1280, height: 720 },
+  trace: 'on',
+  video: 'on',
+  screenshot: {
+    fullPage: true,
+    mode: 'on',
   },
+},
+
 
   /* Configure projects for major browsers */
    projects: [
@@ -64,7 +64,7 @@ export default defineConfig({
                   fullPage: true,
                   mode: "on"
               },
-              baseURL: 'https://qauto.forstudy.space/',
+    
           },
            expect: {
     timeout: 5000, 
