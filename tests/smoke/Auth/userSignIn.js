@@ -1,8 +1,7 @@
 import {test as setup} from "@playwright/test"
-import MainPage from "../../src/pageObjects/MainPage.js";
+import MainPage from "../../src/pageObjects/main/MainPage.js";
 
-
-setup ("User Login", async ({page, context}) => {
+setup("User Login", async ({page, context}) => {
   
     const adminCredentials = {
         email: "olena@test.com",

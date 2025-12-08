@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { SignupPopup } from '../../../src/PageObjects/SignupPopup.js';
+import { SignupPopup } from '../../../src/pageObjects/SignupPopup.js';
 
 test.describe('User Registration - Last Name validation', () => {
   let signupPopup;

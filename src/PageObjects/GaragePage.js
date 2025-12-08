@@ -5,11 +5,10 @@ import { BasePage } from './BasePage.js';
 export class GaragePage extends BasePage {
   constructor(page) {
     super(page);
-    this.url = '/panel/garage'; 
+    this.url = '/panel/garage';
 
     this.garageRoot = page.locator('app-garage, .garage-page, .panel-page').first();
     this.addCarBtn = page.getByRole('button', { name: 'Add car' });
-  
   }
 
   async open() {
@@ -21,7 +20,6 @@ export class GaragePage extends BasePage {
   }
 
   async addVehicle({ make, model, mileage }) {
-   
     await this.addCarBtn.click();
     await this.page.getByLabel('Brand').selectOption(make);
     await this.page.getByLabel('Model').selectOption(model);
@@ -29,9 +27,8 @@ export class GaragePage extends BasePage {
     await this.page.getByRole('button', { name: 'Add' }).click();
   }
 
- async expectVehicleInList(vehicleName) {
-  await expect(this.page.getByText(vehicleName)).toBeVisible();
+ async expectCarInList(carName) {
+  await expect(this.page.getByText(carName).first()).toBeVisible();
 }
-
 
 }
