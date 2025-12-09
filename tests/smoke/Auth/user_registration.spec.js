@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { faker } from '@faker-js/faker';
-import { SignupPopup } from '../../../src/PageObjects/SignupPopup.js';
+import { SignupPopup } from '../../../src/pageObjects/SignupPopup.js';
 
 test('should register a new user successfully', async ({ page }) => {
   const signupPopup = new SignupPopup(page);
