@@ -12,5 +12,6 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
-storageStates/
+state/
+
 
