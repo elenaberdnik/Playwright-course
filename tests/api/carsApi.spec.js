@@ -1,29 +1,7 @@
-import { test, expect, request as pwRequest } from '@playwright/test';
+import { adminApiTest as test, expect } from '../../src/fixtures/adminApi.fixture.js';
 
 test.describe('POST /api/cars — create car', () => {
-  let api;
-
-  test.beforeAll(async () => {
-    api = await pwRequest.newContext({
-      baseURL: 'https://qauto.forstudy.space',
-    });
-
-    const loginResponse = await api.post('/api/auth/signin', {
-      data: {
-        email: 'tedoneh173@canvect.com',
-        password: 'Makar_2019',
-      },
-    });
-
-    await expect(loginResponse).toBeOK();
-  });
-
-  test.afterAll(async () => {
-    await api.dispose();
-  });
-
- 
-  test('should create a car successfully with valid data', async () => {
+  test('should create a car successfully with valid data', async ({ api }) => {
     const newCar = { carBrandId: 1, carModelId: 1, mileage: 122 };
 
     const response = await api.post('/api/cars', { data: newCar });
@@ -31,41 +9,35 @@ test.describe('POST /api/cars — create car', () => {
 
     const body = await response.json();
     expect(body.status).toBe('ok');
-    expect(body.data).toMatchObject(newCar);
-  });
 
  
-  test('should not create a car without mileage', async () => {
-    const invalidCar = {
+    expect(body.data).toMatchObject({
       carBrandId: 1,
       carModelId: 1,
-      
-    };
-
-    const response = await api.post('/api/cars', { data: invalidCar });
-
-    expect(response.status()).toBe(400);
-
-    const body = await response.json();
-    expect(body.status).not.toBe('ok');
- 
+      mileage: 122,
+    });
   });
 
-  
-  test('should not create a car with invalid data types', async () => {
-    const invalidCar = {
-      carBrandId: 'invalid', 
-      carModelId: -1,        
-      mileage: 'abc',        
-    };
+  test('should not create a car without mileage (400)', async ({ api }) => {
+    const invalidCar = { carBrandId: 1, carModelId: 1 };
 
     const response = await api.post('/api/cars', { data: invalidCar });
-
     expect(response.status()).toBe(400);
 
     const body = await response.json();
  
-    expect(body.status).not.toBe('ok');
-   
+    expect(body.status).toBe('error');
+    expect(body.message).toBeTruthy();
+  });
+
+  test('should not create a car with invalid data types (400)', async ({ api }) => {
+    const invalidCar = { carBrandId: 'invalid', carModelId: -1, mileage: 'abc' };
+
+    const response = await api.post('/api/cars', { data: invalidCar });
+    expect(response.status()).toBe(400);
+
+    const body = await response.json();
+    expect(body.status).toBe('error');
+    expect(body.message).toBeTruthy();
   });
 });
