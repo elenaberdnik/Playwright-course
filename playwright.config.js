@@ -34,7 +34,8 @@ export default defineConfig({
   baseURL: config.baseURL,
     // @ts-ignore
   httpCredentials: config.httpCredentials,
-  headless: true, 
+  storageState: 'state/adminStorageState.json',
+  headless: false, 
   viewport: { width: 1280, height: 720 },
   trace: 'on',
   video: 'on',

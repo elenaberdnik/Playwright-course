@@ -2,12 +2,13 @@ import { expect } from '@playwright/test';
 
 
 export class BasePage {
-  constructor(page) {
-    this.page = page;
-  }
+constructor(page, url) {
+        this.page = page;
+        this._url = url;
+    }
 
-  async goTo(url) {
-    await this.page.goto(url);
+  async goTo() {
+    await this.page.goto(this._url)
   }
 
   async expectVisible(element) {

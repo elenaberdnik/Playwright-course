@@ -3,15 +3,15 @@ import MainPage from "../../src/pageObjects/MainPage.js";
 
 
 
-setup ("User Login", async ({page, context}) => {
+setup.only ("User Login", async ({page, context}) => {
   
     const adminCredentials = {
-        email: "olena@test.com",
-        password: "Password123"
+        email: "tedoneh173@canvect.com",
+        password: "Makar_2019"
     }
 
     const mainPage = new MainPage(page)
-    await mainPage.navigate()
+    await mainPage.goTo()
     await mainPage.loginWithCredentials(adminCredentials)
 
     await context.storageState({
